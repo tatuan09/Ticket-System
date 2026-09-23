@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ticket_system',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': os.environ.get('MYSQLDATABASE', 'ticket_system'),
+        'USER': os.environ.get('MYSQLUSER', 'root'),
+        'PASSWORD': os.environ.get('MYSQLPASSWORD', ''),
+        'HOST': os.environ.get('MYSQLHOST', '127.0.0.1'),
+        'PORT': os.environ.get('MYSQLPORT', '3306'),
     }
 }
 
