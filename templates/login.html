@@ -1,0 +1,85 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Ticket-System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class="login-page">
+
+    <main class="login-container">
+
+        <div class="login-card">
+
+            <div class="login-header">
+                <div class="logo">
+                    <span class="logo-icon">T</span>
+                    <span>Ticket-System</span>
+                </div>
+
+                <h1>Willkommen zurück</h1>
+                <p>Bitte melden Sie sich an, um fortzufahren.</p>
+            </div>
+
+            <form class="login-form" method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="email">E-Mail</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="username"
+                        placeholder="name@beispiel.de"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <div class="password-label">
+                        <label for="password">Passwort</label>
+                        <a href="#">Passwort vergessen?</a>
+                    </div>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="••••••••"
+                        required
+                    >
+                </div>
+
+                <div class="remember-me">
+                    <label>
+                        <input type="checkbox" name="remember">
+                        <span>Angemeldet bleiben</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="login-button">
+                    Anmelden
+                    <span>→</span>
+                </button>
+
+            </form>
+
+            <div class="login-footer">
+                <p>
+                    Probleme beim Anmelden?
+                    <a href="#">IT-Support kontaktieren</a>
+                </p>
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

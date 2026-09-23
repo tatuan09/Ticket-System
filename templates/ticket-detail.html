@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="de">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ticket #{{ ticket.ticket_id|stringformat:"03d" }} | Ticket-System</title>
+
+   <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-top">
+
+            <div class="dashboard-logo">
+                <span class="logo-icon">T</span>
+                <span>Ticket-System</span>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="{% url 'dashboard' %}" class="nav-item">
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'tickets' %}" class="nav-item active">
+                    <span class="nav-icon">▤</span>
+                    <span>Meine Tickets</span>
+                </a>
+
+                <a href="{% url 'create_ticket' %}" class="nav-item">
+                    <span class="nav-icon">＋</span>
+                    <span>Neues Ticket</span>
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="{% url 'einstellungen' %}" class="nav-item">
+                <span class="nav-icon">⚙</span>
+                <span>Einstellungen</span>
+            </a>
+
+             <a href="{% url 'logout' %}" class="nav-item logout">
+                <span class="nav-icon">↪</span>
+                <span>Abmelden</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="dashboard-main">
+
+        <!-- HEADER -->
+
+        <header class="dashboard-header">
+
+            <div>
+
+                <p class="header-label">
+                    TICKET #{{ ticket.ticket_id|stringformat:"03d" }}
+                </p>
+
+                <h1>
+                    {{ ticket.titel }}
+                </h1>
+
+                <p class="header-description">
+                    Erstellt am {{ ticket.erstellt_am|date:"d.m.Y" }}
+    um {{ ticket.erstellt_am|date:"H:i" }} Uhr
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <button class="notification-button">
+                    <span>♢</span>
+                    <span class="notification-dot"></span>
+                </button>
+
+
+                <div class="user-profile">
+
+                    <div class="user-avatar">
+                        MM
+                    </div>
+
+                    <div class="user-info">
+                        <strong>{{ benutzer.vorname }} {{ benutzer.nachname }}</strong>
+                        <span>{{ benutzer.rolle }}</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             BACK BUTTON
+        ========================== -->
+
+        <a href="{% url 'tickets' %}" class="back-link">
+            ← Zurück zu Meine Tickets
+        </a>
+
+
+        <!-- =========================
+             TICKET CONTENT
+        ========================== -->
+
+        <div class="ticket-detail-layout">
+
+
+            <!-- =====================
+                 LEFT CONTENT
+            ====================== -->
+
+            <div class="ticket-detail-main">
+
+
+                <!-- TICKET DESCRIPTION -->
+
+                <section class="detail-card">
+
+                    <div class="detail-card-header">
+
+                        <div>
+
+                            <span class="detail-label">
+                                PROBLEMBESCHREIBUNG
+                            </span>
+
+                            <h2>
+                                {{ ticket.titel }}
+                            </h2>
+
+                        </div>
+
+
+                        <span class="status
+    {% if ticket.status == 'Offen' %}
+        open
+    {% elif ticket.status == 'In Bearbeitung' %}
+        progress
+    {% else %}
+        closed
+    {% endif %}
+">
+    <span></span>
+    {{ ticket.status }}
+</span>
+
+                    </div>
+
+
+                    <div class="description-content">
+
+                        <p>
+                            {{ ticket.beschreibung|linebreaksbr }}
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- COMMENTS -->
+
+                <section class="detail-card">
+
+                    <div class="comments-header">
+
+                        <div>
+
+                            <span class="detail-label">
+                                KOMMUNIKATION
+                            </span>
+
+                            <h2>
+                                Kommentare
+                            </h2>
+
+                        </div>
+
+                        <span class="comment-count">
+                            {{ comments|length }}
+                            {% if comments|length == 1 %}
+                                Kommentar
+                                {% else %}
+                            Kommentare
+                            {% endif %}
+                        </span>
+
+                    </div>
+
+
+                    {% for comment in comments %}
+
+<div class="comment">
+
+    <div class="comment-avatar user">
+        {{ comment.benutzer.vorname|slice:":1" }}{{ comment.benutzer.nachname|slice:":1" }}
+    </div>
+
+    <div class="comment-content">
+
+        <div class="comment-top">
+
+            <div>
+                <strong>
+                    {{ comment.benutzer.vorname }}
+                    {{ comment.benutzer.nachname }}
+                </strong>
+
+                <span>
+                    {{ comment.benutzer.rolle }}
+                </span>
+            </div>
+
+            <time>
+                {{ comment.erstellt_am|date:"d.m.Y" }}
+                ·
+                {{ comment.erstellt_am|date:"H:i" }}
+            </time>
+
+        </div>
+
+        <p>
+            {{ comment.inhalt|linebreaksbr }}
+        </p>
+
+    </div>
+
+</div>
+
+{% empty %}
+
+<p>Keine Kommentare vorhanden.</p>
+
+{% endfor %}
+
+                    <!-- NEW COMMENT -->
+
+                    <div class="new-comment">
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label for="comment">
+            Kommentar hinzufügen
+        </label>
+
+        <textarea
+            id="comment"
+            name="comment"
+            placeholder="Schreiben Sie eine Nachricht..."
+            rows="4"
+            required
+        ></textarea>
+
+        <div class="comment-actions">
+
+            <span>
+                Ihre Nachricht wird an den IT-Support gesendet.
+            </span>
+
+            <button
+                type="submit"
+                class="primary-button"
+            >
+                Kommentar senden
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+            <!-- =====================
+                 RIGHT SIDEBAR
+            ====================== -->
+
+            <aside class="ticket-detail-sidebar">
+
+
+                <!-- STATUS -->
+
+                <section class="detail-side-card">
+
+                    <span class="detail-label">
+                        STATUS
+                    </span>
+
+                    <div class="side-status">
+
+                        <span class="status-dot"></span>
+
+                        <strong>
+                            {{ ticket.status }}
+                        </strong>
+
+                    </div>
+
+                    <p>
+                        Dieses Ticket wartet auf Bearbeitung durch den
+                        IT-Support.
+                    </p>
+
+                    {% if benutzer.rolle == 'Support' %}
+                        <div class="status-change">
+
+    <h3>Status ändern</h3>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label for="status">
+            Neuer Status
+        </label>
+
+        <select id="status" name="status">
+
+            <option value="Offen"
+                {% if ticket.status == "Offen" %}selected{% endif %}>
+                Offen
+            </option>
+
+            <option value="In Bearbeitung"
+                {% if ticket.status == "In Bearbeitung" %}selected{% endif %}>
+                In Bearbeitung
+            </option>
+
+            <option value="Geschlossen"
+                {% if ticket.status == "Geschlossen" %}selected{% endif %}>
+                Geschlossen
+            </option>
+
+        </select>
+
+        <button type="submit" class="primary-button">
+            Status ändern
+        </button>
+
+    </form>
+
+</div>
+{% endif %}
+                </section>
+
+
+                <!-- TICKET INFORMATION -->
+
+                <section class="detail-side-card">
+
+                    <span class="detail-label">
+                        TICKET-INFORMATIONEN
+                    </span>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Ticket-ID
+                        </span>
+
+                        <strong>
+                            #{{ ticket.ticket_id|stringformat:"03d" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Kategorie
+                        </span>
+
+                        <strong>
+                             {{ ticket.kategorie.name }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Priorität
+                        </span>
+
+                        <strong class="side-priority">
+                            {{ ticket.prioritaet }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Erstellt am
+                        </span>
+
+                        <strong>
+                            {{ ticket.erstellt_am|date:"d.m.Y" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-row">
+
+                        <span>
+                            Aktualisiert
+                        </span>
+
+                        <strong>
+                            {{ ticket.aktualisiert_am|date:"d.m.Y" }}
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <!-- CREATED BY -->
+
+                <section class="detail-side-card">
+
+                    <span class="detail-label">
+                        ERSTELLT VON
+                    </span>
+
+
+                    <div class="created-user">
+
+                        <div class="created-avatar">
+                            MM
+                        </div>
+
+
+                        <div>
+
+                            <strong>
+                                {{ ticket.benutzer.vorname }} {{ ticket.benutzer.nachname }}
+                            </strong>
+
+                            <span>
+                                {{ ticket.benutzer.email }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ACTION -->
+
+                <a
+                    href="{% url 'tickets' %}"
+                    class="secondary-button detail-back-button"
+                >
+                    ← Alle Tickets
+                </a>
+
+            </aside>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                Ticket-System
+            </span>
+
+            <span>
+                IT-Support · 2026
+            </span>
+
+        </footer>
+
+    </main>
+
+</body>
+
+</html>

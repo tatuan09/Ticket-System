@@ -1,0 +1,359 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meine Tickets | Ticket-System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-top">
+
+            <div class="dashboard-logo">
+                <span class="logo-icon">T</span>
+                <span>Ticket-System</span>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="{% url 'dashboard' %}" class="nav-item">
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'tickets' %}" class="nav-item active">
+                    <span class="nav-icon">▤</span>
+                    <span>Meine Tickets</span>
+                </a>
+
+                <a href="{% url 'create_ticket' %}" class="nav-item">
+                    <span class="nav-icon">＋</span>
+                    <span>Neues Ticket</span>
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="{% url 'einstellungen' %}" class="nav-item">
+                <span class="nav-icon">⚙</span>
+                <span>Einstellungen</span>
+            </a>
+
+             <a href="{% url 'logout' %}" class="nav-item logout">
+                <span class="nav-icon">↪</span>
+                <span>Abmelden</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="dashboard-main">
+
+        <!-- HEADER -->
+
+        <header class="dashboard-header">
+
+            <div>
+
+                <p class="header-label">
+                    TICKET-VERWALTUNG
+                </p>
+
+                <h1>
+                    Meine Tickets
+                </h1>
+
+                <p class="header-description">
+                    Übersicht über Ihre erstellten Support-Tickets.
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <button class="notification-button">
+                    <span>♢</span>
+                    <span class="notification-dot"></span>
+                </button>
+
+
+                <div class="user-profile">
+
+                    <div class="user-avatar">
+                        MM
+                    </div>
+
+                    <div class="user-info">
+                        <strong>Max Mustermann</strong>
+                        <span>Benutzer</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             TOP ACTION BAR
+        ========================== -->
+
+        <section class="tickets-toolbar">
+        
+         <form method="GET" action="{% url 'tickets' %}">
+   
+            <div class="ticket-search">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+               <input
+                    type="text"
+                    name="search"
+                    value="{{ request.GET.search|default:'' }}"
+                    placeholder="Ticket suchen..."
+                >
+
+            </div>
+        </form>
+
+            <div class="ticket-filters">
+
+                <form method="GET" action="{% url 'tickets' %}">
+    <select
+        id="status-filter"
+        name="status"
+        onchange="this.form.submit()"
+    >
+        <option value="">Alle Status</option>
+
+        <option value="Offen"
+            {% if request.GET.status == "Offen" %}selected{% endif %}>
+            Offen
+        </option>
+
+        <option value="In Bearbeitung"
+            {% if request.GET.status == "In Bearbeitung" %}selected{% endif %}>
+            In Bearbeitung
+        </option>
+
+        <option value="Geschlossen"
+            {% if request.GET.status == "Geschlossen" %}selected{% endif %}>
+            Geschlossen
+        </option>
+    </select>
+    <select
+    id="category-filter"
+    name="category"
+    onchange="this.form.submit()"
+>
+    <option value="">Alle Kategorien</option>
+
+    <option value="WLAN"
+        {% if request.GET.category == "WLAN" %}selected{% endif %}>
+        WLAN
+    </option>
+
+    <option value="Hardware"
+        {% if request.GET.category == "Hardware" %}selected{% endif %}>
+        Hardware
+    </option>
+
+    <option value="Software"
+        {% if request.GET.category == "Software" %}selected{% endif %}>
+        Software
+    </option>
+
+    <option value="Benutzerkonto"
+        {% if request.GET.category == "Benutzerkonto" %}selected{% endif %}>
+        Benutzerkonto
+    </option>
+</select>
+
+</form>
+
+
+               
+
+
+                <a href="{% url 'create_ticket' %}" class="primary-button">
+                    <span>＋</span>
+                    Neues Ticket
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             TICKET SUMMARY
+        ========================== -->
+
+        <section class="ticket-summary">
+
+            <div class="summary-left">
+
+                <strong>
+                    {{ tickets|length }} Tickets
+                </strong>
+
+                <span>
+                    insgesamt
+                </span>
+
+            </div>
+
+
+            <div class="summary-right">
+
+                <span>
+                    Zuletzt aktualisiert:
+                </span>
+
+                <strong>
+                    Heute, 13:10
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             TICKET LIST
+        ========================== -->
+
+        <section class="my-tickets-list">
+
+
+            {% for ticket in tickets %}
+
+<a href="{% url 'ticket_detail' ticket.ticket_id %}" class="my-ticket-card">
+
+    <div class="ticket-main-info">
+
+        <div class="ticket-id">
+            #{{ ticket.ticket_id|stringformat:"03d" }}
+        </div>
+
+        <div class="ticket-content">
+
+            <h2>
+                {{ ticket.titel }}
+            </h2>
+
+            <p>
+                {{ ticket.beschreibung }}
+            </p>
+
+            <div class="ticket-meta">
+
+                <span>
+                    {{ ticket.kategorie.name }}
+                </span>
+
+                <span class="meta-separator">
+                    •
+                </span>
+
+                <span>
+                    Erstellt am {{ ticket.erstellt_am|date:"d.m.Y" }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="ticket-right">
+
+        <span class="priority
+            {% if ticket.prioritaet == 'Hoch' %}
+                high
+            {% else %}
+                normal
+            {% endif %}
+        ">
+            {{ ticket.prioritaet }}
+        </span>
+
+        <span class="status
+            {% if ticket.status == 'Offen' %}
+                open
+            {% elif ticket.status == 'In Bearbeitung' %}
+                progress
+            {% else %}
+                closed
+            {% endif %}
+        ">
+            <span></span>
+            {{ ticket.status }}
+        </span>
+
+        <span class="ticket-arrow">
+            →
+        </span>
+
+    </div>
+
+</a>
+
+{% empty %}
+
+<p>Keine Tickets vorhanden.</p>
+
+{% endfor %}
+
+
+        </section>
+
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                Ticket-System
+            </span>
+
+            <span>
+                IT-Support · 2026
+            </span>
+
+        </footer>
+
+    </main>
+
+</body>
+
+</html>

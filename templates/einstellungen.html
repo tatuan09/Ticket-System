@@ -1,0 +1,403 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Einstellungen | Ticket-System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="dashboard-logo">
+            <div class="logo-icon">T</div>
+
+            <div>
+                <div class="logo-title">Ticket-System</div>
+                <div class="logo-subtitle">IT Support</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="{% url 'dashboard' %}" class="nav-item">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'tickets' %}" class="nav-item">
+                <span class="nav-icon">▤</span>
+                <span>Meine Tickets</span>
+            </a>
+
+            <a href="{% url 'create_ticket' %}" class="nav-item">
+                <span class="nav-icon">＋</span>
+                <span>Neues Ticket</span>
+            </a>
+
+           <a href="{% url 'einstellungen' %}" class="nav-item active">
+                <span class="nav-icon">⚙</span>
+                <span>Einstellungen</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+           <a href="{% url 'logout' %}" class="nav-item logout">
+                <span class="nav-icon">↪</span>
+                <span>Abmelden</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+
+        <!-- Header -->
+        <header class="dashboard-header">
+
+            <div>
+                <h1>Einstellungen</h1>
+                <p>Verwalten Sie Ihre persönlichen Einstellungen.</p>
+            </div>
+
+            <div class="user-profile">
+
+                <div class="user-avatar">
+                    M
+                </div>
+
+                <div class="user-info">
+                    <strong>Max Mustermann</strong>
+                    <span>Benutzer</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- Settings Content -->
+        <div class="settings-wrapper">
+
+
+            <!-- Persönliche Daten -->
+            <section class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-icon">
+                        👤
+                    </div>
+
+                    <div>
+                        <h2>Persönliche Daten</h2>
+                        <p>Ihre persönlichen Informationen.</p>
+                    </div>
+
+                </div>
+
+
+                <form class="settings-form">
+
+                    <div class="settings-form-row">
+
+                        <div class="form-group">
+                            <label for="first-name">
+                                Vorname
+                            </label>
+
+                            <input
+                                type="text"
+                                id="first-name"
+                                value="Max"
+                            >
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="last-name">
+                                Nachname
+                            </label>
+
+                            <input
+                                type="text"
+                                id="last-name"
+                                value="Mustermann"
+                            >
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            E-Mail-Adresse
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            value="max@example.de"
+                        >
+
+                    </div>
+
+
+                    <div class="settings-actions">
+
+                        <button
+                            type="button"
+                            class="primary-button"
+                        >
+                            Änderungen speichern
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+
+            <!-- Passwort -->
+            <section class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-icon">
+                        🔒
+                    </div>
+
+                    <div>
+                        <h2>Passwort ändern</h2>
+                        <p>Ändern Sie hier Ihr Passwort.</p>
+                        {% if password_error %}
+                    <p style="color: #dc2626; margin-top: 10px;">
+                        {{ password_error }}
+                    </p>
+                {% endif %}
+
+                {% if password_success %}
+                    <p style="color: #16a34a; margin-top: 10px;">
+                        {{ password_success }}
+                    </p>
+                {% endif %}
+                    </div>
+
+                </div>
+
+
+                <form method="POST" class="settings-form">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+
+                        <label for="current-password">
+                            Aktuelles Passwort
+                        </label>
+
+                        <input
+                            type="password"
+                            id="current-password"
+                            name="current_password"
+                            placeholder="Aktuelles Passwort"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="settings-form-row">
+
+                        <div class="form-group">
+
+                            <label for="new-password">
+                                Neues Passwort
+                            </label>
+
+                            <input
+                                type="password"
+                                id="new-password"
+                                name="new_password"
+                                placeholder="Neues Passwort"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="confirm-password">
+                                Passwort bestätigen
+                            </label>
+
+                            <input
+                                type="password"
+                                id="confirm-password"
+                                name="confirm_password"
+                                placeholder="Passwort bestätigen"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-actions">
+
+                        <button
+                            type="submit"
+                            name="change_password"
+                            class="secondary-button"
+                        >
+                            Passwort ändern
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+
+            <!-- Benachrichtigungen -->
+            <section class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-icon">
+                        🔔
+                    </div>
+
+                    <div>
+                        <h2>Benachrichtigungen</h2>
+                        <p>Verwalten Sie Ihre Benachrichtigungseinstellungen.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="settings-options">
+
+                    <label class="setting-option">
+
+                        <div>
+
+                            <strong>
+                                E-Mail-Benachrichtigungen
+                            </strong>
+
+                            <span>
+                                Benachrichtigung bei Änderungen an Ihren Tickets
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="checkbox"
+                            checked
+                        >
+
+                    </label>
+
+
+                    <label class="setting-option">
+
+                        <div>
+
+                            <strong>
+                                Neue Kommentare
+                            </strong>
+
+                            <span>
+                                Benachrichtigung bei neuen Kommentaren
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="checkbox"
+                            checked
+                        >
+
+                    </label>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Account -->
+            <section class="settings-card danger-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-icon">
+                        ⚠
+                    </div>
+
+                    <div>
+                        <h2>Account</h2>
+                        <p>Weitere Aktionen für Ihr Benutzerkonto.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="account-action">
+
+                    <div>
+
+                        <strong>Abmelden</strong>
+
+                        <span>
+                            Sie werden von Ihrem Konto abgemeldet.
+                        </span>
+
+                    </div>
+                        <a
+                            href="{% url 'logout' %}"
+                            class="secondary-button"
+                        >
+                            Abmelden
+                        </a>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+
+            <span>© 2026 Ticket-System</span>
+
+            <span>IT Support</span>
+
+        </footer>
+
+    </main>
+
+</body>
+</html>

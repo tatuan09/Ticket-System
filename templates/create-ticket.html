@@ -1,0 +1,374 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Neues Ticket | Ticket-System</title>
+
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-top">
+
+            <div class="dashboard-logo">
+                <span class="logo-icon">T</span>
+                <span>Ticket-System</span>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="{% url 'dashboard' %}" class="nav-item">
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'tickets' %}" class="nav-item">
+                    <span class="nav-icon">▤</span>
+                    <span>Meine Tickets</span>
+                </a>
+
+                <a href="{% url 'create_ticket' %}" class="nav-item active">
+                    <span class="nav-icon">＋</span>
+                    <span>Neues Ticket</span>
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="{% url 'einstellungen' %}" class="nav-item">
+                <span class="nav-icon">⚙</span>
+                <span>Einstellungen</span>
+            </a>
+
+            <a href="{% url 'logout' %}" class="nav-item logout">
+                <span class="nav-icon">↪</span>
+                <span>Abmelden</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="dashboard-main">
+
+        <!-- HEADER -->
+
+        <header class="dashboard-header">
+
+            <div>
+
+                <p class="header-label">
+                    IT-SUPPORT
+                </p>
+
+                <h1>
+                    Neues Ticket erstellen
+                </h1>
+
+                <p class="header-description">
+                    Beschreiben Sie Ihr technisches Problem so genau wie möglich.
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <button class="notification-button">
+                    <span>♢</span>
+                    <span class="notification-dot"></span>
+                </button>
+
+
+                <div class="user-profile">
+
+                    <div class="user-avatar">
+                        MM
+                    </div>
+
+                    <div class="user-info">
+                        <strong>Max Mustermann</strong>
+                        <span>Benutzer</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             FORM
+        ========================== -->
+
+        <section class="create-ticket-wrapper">
+
+            <form method="POST" class="create-ticket-form">
+                {% csrf_token %}
+
+
+                <!-- GENERAL INFORMATION -->
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <div class="form-section-number">
+                            01
+                        </div>
+
+                        <div>
+                            <h2>Problemdetails</h2>
+
+                            <p>
+                                Geben Sie die wichtigsten Informationen zu Ihrem Problem an.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <!-- TITEL -->
+
+                    <div class="form-group">
+
+                        <label for="title">
+                            Titel
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="z. B. WLAN funktioniert nicht"
+                            required
+                        >
+
+                        <small>
+                            Geben Sie Ihrem Problem einen kurzen und eindeutigen Titel.
+                        </small>
+
+                    </div>
+
+
+                    <!-- KATEGORIE + PRIORITÄT -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="category">
+                                Kategorie
+                                <span>*</span>
+                            </label>
+
+                            <select
+                                id="category"
+                                name="category"
+                                required
+                            >
+
+                                <option value="">
+                                    Kategorie auswählen
+                                </option>
+
+                                <option value="1">
+                                    WLAN
+                                </option>
+
+                                <option value="2">
+                                    Hardware
+                                </option>
+
+                                <option value="3">
+                                    Software
+                                </option>
+
+                                <option value="4">
+                                    Benutzerkonto
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="priority">
+                                Priorität
+                                <span>*</span>
+                            </label>
+
+                            <select
+                                id="priority"
+                                name="priority"
+                                required
+                            >
+
+                                <option value="">
+                                    Priorität auswählen
+                                </option>
+
+                                <option value="Niedrig">
+                                    Niedrig
+                                </option>
+
+                                <option value="Normal">
+                                    Normal
+                                </option>
+
+                                <option value="Hoch">
+                                    Hoch
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group">
+
+                        <label for="description">
+                            Beschreibung
+                            <span>*</span>
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="8"
+                            placeholder="Beschreiben Sie Ihr Problem möglichst genau..."
+                            required
+                        ></textarea>
+
+                        <small>
+                            Beschreiben Sie beispielsweise wann das Problem auftritt
+                            und was Sie bereits versucht haben.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ADDITIONAL INFORMATION -->
+
+                <div class="form-section">
+
+                    <div class="form-section-header">
+
+                        <div class="form-section-number">
+                            02
+                        </div>
+
+                        <div>
+                            <h2>Weitere Informationen</h2>
+
+                            <p>
+                                Zusätzliche Angaben können die Bearbeitung erleichtern.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="info-icon">
+                            i
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Hinweis
+                            </strong>
+
+                            <p>
+                                Bitte geben Sie keine Passwörter oder andere vertrauliche
+                                Zugangsdaten in der Beschreibung an.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <a
+                        href="tickets.html"
+                        class="secondary-button"
+                    >
+                        Abbrechen
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        <span>＋</span>
+                        Ticket erstellen
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                Ticket-System
+            </span>
+
+            <span>
+                IT-Support · 2026
+            </span>
+
+        </footer>
+
+    </main>
+
+</body>
+
+</html>

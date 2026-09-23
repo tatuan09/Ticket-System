@@ -1,0 +1,351 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Ticket-System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-top">
+
+            <div class="dashboard-logo">
+                <span class="logo-icon">T</span>
+                <span>Ticket-System</span>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="index.html" class="nav-item active">
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'tickets' %}" class="nav-item">
+                    <span class="nav-icon">▤</span>
+                    <span>Meine Tickets</span>
+                </a>
+
+                <a href="{% url 'create_ticket' %}" class="nav-item">
+                    <span class="nav-icon">＋</span>
+                    <span>Neues Ticket</span>
+                </a>
+                
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="{% url 'einstellungen' %}" class="nav-item">
+                <span class="nav-icon">⚙</span>
+                <span>Einstellungen</span>
+            </a>
+
+             <a href="{% url 'logout' %}" class="nav-item logout">
+                <span class="nav-icon">↪</span>
+                <span>Abmelden</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="dashboard-main">
+
+        <!-- HEADER -->
+
+        <header class="dashboard-header">
+
+            <div>
+                <p class="header-label">Dashboard</p>
+
+                <h1>Guten Tag, {{ benutzer.vorname }} 👋</h1>
+
+                <p class="header-description">
+                    Hier finden Sie eine Übersicht über Ihre Support-Tickets.
+                </p>
+            </div>
+
+
+            <div class="header-actions">
+
+                <button class="notification-button">
+                    <span>♢</span>
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="user-profile">
+
+                    <div class="user-avatar">
+                        {{ benutzer.vorname|first }}{{ benutzer.nachname|first }}
+                    </div>
+
+                    
+                        <div class="user-info">
+                            <strong>{{ benutzer.vorname }} {{ benutzer.nachname }}</strong>
+                            <span>{{ benutzer.rolle }}</span>
+                        </div>
+                    
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             QUICK ACTION
+        ========================== -->
+
+        <section class="quick-action">
+
+            <div>
+
+                <span class="quick-label">
+                    IT-SUPPORT
+                </span>
+
+                <h2>Haben Sie ein technisches Problem?</h2>
+
+                <p>
+                    Erstellen Sie ein neues Ticket und beschreiben Sie Ihr Problem.
+                </p>
+
+            </div>
+
+            <a href="{% url 'create_ticket' %}" class="primary-button">
+                <span>＋</span>
+                Neues Ticket
+            </a>
+
+        </section>
+
+
+        <!-- =========================
+             STATISTICS
+        ========================== -->
+
+        <section class="statistics">
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+                    <span class="stat-title">Offene Tickets</span>
+                    <span class="stat-icon">○</span>
+                </div>
+
+                <div class="stat-value">
+                    {{ offene_tickets }}
+                </div>
+
+                <p class="stat-description">
+                    Warten auf Bearbeitung
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+                    <span class="stat-title">In Bearbeitung</span>
+                    <span class="stat-icon">◐</span>
+                </div>
+
+                <div class="stat-value">
+                    {{ in_bearbeitung }}
+                </div>
+
+                <p class="stat-description">
+                    Wird aktuell bearbeitet
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+                    <span class="stat-title">Geschlossen</span>
+                    <span class="stat-icon">✓</span>
+                </div>
+
+                <div class="stat-value">
+                    {{ geschlossene_tickets }}
+                </div>
+
+                <p class="stat-description">
+                    Erfolgreich gelöst
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+                    <span class="stat-title">Alle Tickets</span>
+                    <span class="stat-icon">▤</span>
+                </div>
+
+                <div class="stat-value">
+                    {{ alle_tickets }}
+                </div>
+
+                <p class="stat-description">
+                    Insgesamt erstellt
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             TICKET SECTION
+        ========================== -->
+
+        <section class="ticket-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Meine Tickets</h2>
+
+                    <p>
+                        Ihre zuletzt erstellten Support-Anfragen
+                    </p>
+                </div>
+
+                <a href="{% url 'tickets' %}" class="view-all">
+                    Alle anzeigen →
+                </a>
+
+            </div>
+
+
+            <div class="ticket-table">
+
+                <!-- TABLE HEADER -->
+
+                <div class="ticket-row ticket-header">
+
+                    <span>Ticket</span>
+                    <span>Kategorie</span>
+                    <span>Priorität</span>
+                    <span>Status</span>
+                    <span>Datum</span>
+                    <span></span>
+
+                </div>
+                    {% for ticket in tickets %}
+
+    <a href="{% url 'ticket_detail' ticket.ticket_id %}" class="ticket-row">
+    <div class="ticket-title">
+
+        <span class="ticket-number">
+            #{{ ticket.ticket_id|stringformat:"03d" }}
+        </span>
+
+        <div>
+            <strong>{{ ticket.titel }}</strong>
+
+            <small>
+                {{ ticket.beschreibung|truncatechars:55 }}
+            </small>
+        </div>
+
+    </div>
+
+    <span class="ticket-category">
+        {{ ticket.kategorie.name }}
+    </span>
+
+    <span class="priority
+        {% if ticket.prioritaet == 'Hoch' %}
+            high
+        {% else %}
+            normal
+        {% endif %}
+    ">
+        {{ ticket.prioritaet }}
+    </span>
+
+    <span class="status
+        {% if ticket.status == 'Offen' %}
+            open
+        {% elif ticket.status == 'In Bearbeitung' %}
+            progress
+        {% else %}
+            closed
+        {% endif %}
+    ">
+        <span></span>
+        {{ ticket.status }}
+    </span>
+
+    <span class="ticket-date">
+        {{ ticket.erstellt_am|date:"d.m.Y" }}
+    </span>
+
+    <span class="ticket-arrow">
+        →
+    </span>
+
+</a>
+
+{% empty %}
+
+<div class="no-tickets">
+    Keine Tickets vorhanden.
+</div>
+
+{% endfor %}
+
+                
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                Ticket-System
+            </span>
+
+            <span>
+                IT-Support · 2026
+            </span>
+
+        </footer>
+
+    </main>
+
+</body>
+</html>
