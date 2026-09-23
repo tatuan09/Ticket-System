@@ -19,3 +19,5 @@ db.sqlite3
 # IDE
 .vscode/
 .idea/
+# Database backup
+ticket_system_backup.sql
