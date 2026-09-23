@@ -24,3 +24,4 @@ ticket_system_backup.sqlticket_system_backup_railway.sql
 
 ticket_system_backup.sql
 ticket_system_backup_railway.sql
+staticfiles/
