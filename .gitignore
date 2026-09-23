@@ -21,3 +21,6 @@ db.sqlite3
 .idea/
 # Database backup
 ticket_system_backup.sqlticket_system_backup_railway.sql
+
+ticket_system_backup.sql
+ticket_system_backup_railway.sql
